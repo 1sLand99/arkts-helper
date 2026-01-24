@@ -1,0 +1,8 @@
+# ArkTS API
+
+  * **[interactiveLiveness（人脸活体检测）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/vision-interactive-liveness)**  
+
+  * **[visionImageAnalyzer（AI识图控件）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/vision-image-analyzer)**  
+
+
+

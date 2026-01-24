@@ -1,0 +1,12 @@
+# ArkTS API
+
+  * **[textProcessing（文本处理）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/natural-language-text-processing-api)**  
+
+  * **[wordTag（词性）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/natural-language-word-tag-api)**  
+
+  * **[jsonObject（实体的其他字段）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/natural-language-json-object-api)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/natural-language-error-code)**  
+
+
+

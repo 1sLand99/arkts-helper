@@ -1,0 +1,481 @@
+#!/usr/bin/env node
+
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+  Tool,
+} from '@modelcontextprotocol/sdk/types.js';
+import * as path from 'path';
+import * as fs from 'fs';
+import { fileURLToPath } from 'url';
+import { DocsSearcher } from './search.js';
+import { huaweiQA, huaweiQABatch } from './huawei-qa.js';
+import { huaweiQAAuth, huaweiQAAuthBatch, getCookie, setCookie, validateCookie } from './huawei-qa-auth.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Find package root by looking for package.json
+function findPackageRoot(startDir: string): string {
+  let currentDir = startDir;
+  while (currentDir !== path.parse(currentDir).root) {
+    const pkgJsonPath = path.join(currentDir, 'package.json');
+    try {
+      if (fs.existsSync(pkgJsonPath)) {
+        const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+        if (pkg.name === 'arkts-docs-mcp-server') {
+          return currentDir;
+        }
+      }
+    } catch {
+      // Continue searching
+    }
+    currentDir = path.dirname(currentDir);
+  }
+  // Fallback to relative path
+  return path.resolve(__dirname, '../static/docs');
+}
+
+// Default docs directory (static/docs subdirectory)
+const packageRoot = findPackageRoot(__dirname);
+const DEFAULT_DOCS_DIR = path.join(packageRoot, 'static/docs');
+
+// Allow override via environment variable
+const DOCS_DIR = process.env.ARKTS_DOCS_DIR || DEFAULT_DOCS_DIR;
+
+const searcher = new DocsSearcher(DOCS_DIR);
+
+// Define MCP tools
+const TOOLS: Tool[] = [
+  {
+    name: 'search_arkts_docs',
+    description: `搜索 HarmonyOS ArkTS 官方开发文档。
+
+## 使用场景
+当用户询问以下内容时，应主动使用此工具搜索相关文档：
+- ArkTS 语法特性和语言约束
+- ArkUI 组件用法（Button、Text、Column、Row、List、Grid 等）
+- 状态管理装饰器（@State、@Prop、@Link、@Observed、@ObjectLink 等）
+- 动画和转场效果（animateTo、transition、共享元素转场等）
+- 导航和路由（Navigation、NavDestination、Router 等）
+- 系统能力和 API（文件访问、网络请求、数据存储等）
+- 错误码和问题排查
+
+## 使用示例
+
+示例1 - 用户问："@State 和 @Prop 有什么区别？"
+调用：search_arkts_docs({ query: "State Prop 装饰器" })
+
+示例2 - 用户问："怎么实现页面跳转？"
+调用：search_arkts_docs({ query: "Navigation 路由 页面跳转" })
+
+示例3 - 用户问："List 组件怎么用？"
+调用：search_arkts_docs({ query: "List 列表组件" })
+
+示例4 - 用户问："动画怎么实现？"
+调用：search_arkts_docs({ query: "animateTo 属性动画" })
+
+## 搜索技巧
+- 使用中文关键词效果更好
+- 可以组合多个关键词，用空格分隔
+- 搜索组件时加上"组件"后缀，如"Button组件"
+- 搜索装饰器时可以带@符号，如"@State"
+
+返回匹配的文档列表，包含标题、预览和 objectId（用于获取完整内容）。`,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: '搜索关键词，支持中英文，多个关键词用空格分隔。例如："State管理"、"Button组件"、"Navigation路由"、"动画 转场"'
+        },
+        limit: {
+          type: 'number',
+          description: '返回结果数量，默认10条，最多50条',
+          default: 10
+        }
+      },
+      required: ['query']
+    }
+  },
+  {
+    name: 'get_arkts_doc',
+    description: `获取 ArkTS 文档的完整内容。
+
+## 使用场景
+在使用 search_arkts_docs 搜索后，根据返回的 objectId 获取文档的完整 Markdown 内容。
+
+## 使用流程
+1. 先调用 search_arkts_docs 搜索相关文档
+2. 从搜索结果中选择最相关的文档
+3. 使用该文档的 objectId 调用此工具获取完整内容
+
+## 使用示例
+
+示例 - 搜索后获取完整文档：
+1. 调用：search_arkts_docs({ query: "State装饰器" })
+2. 从结果中找到 objectId: "arkts-state"
+3. 调用：get_arkts_doc({ objectId: "arkts-state" })
+
+返回文档的完整 Markdown 内容，包含代码示例和详细说明。`,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        objectId: {
+          type: 'string',
+          description: '文档的唯一标识符，从 search_arkts_docs 的搜索结果中获取'
+        }
+      },
+      required: ['objectId']
+    }
+  },
+  {
+    name: 'list_arkts_topics',
+    description: `列出 ArkTS 文档的所有主题分类。
+
+## 使用场景
+- 了解文档库的整体结构
+- 查看有哪些主题分类
+- 统计各分类的文档数量
+
+## 使用示例
+当用户问"文档有哪些分类？"或"有什么类型的文档？"时调用此工具。
+
+返回所有主题分类及其文档数量。`,
+    inputSchema: {
+      type: 'object',
+      properties: {}
+    }
+  },
+  {
+    name: 'ask_huawei_qa',
+    description: `向华为开发者官方智能问答助手提问。
+
+## 使用场景
+当需要获取更全面、更权威的鸿蒙开发答案时使用此工具：
+- 复杂的开发问题（整合了官方文档 + 社区经验）
+- 需要代码示例和最佳实践
+- 错误排查和问题解决
+- 获取最新的开发建议
+
+## 与 search_arkts_docs 的区别
+- search_arkts_docs：搜索本地文档，返回原始文档内容
+- ask_huawei_qa：调用华为官方 AI，返回整合后的智能回答
+
+## 使用示例
+
+示例1 - 用户问："Navigation 怎么实现页面跳转并传参？"
+调用：ask_huawei_qa({ query: "Navigation 怎么实现页面跳转并传参" })
+
+示例2 - 用户问："List 组件性能优化有哪些方法？"
+调用：ask_huawei_qa({ query: "List 组件性能优化方法" })
+
+返回华为官方智能助手的回答，包含参考链接。`,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: '要问的问题，使用中文效果更好'
+        },
+        newSession: {
+          type: 'boolean',
+          description: '是否开启新会话（默认 false，复用之前的会话上下文）',
+          default: false
+        }
+      },
+      required: ['query']
+    }
+  },
+  {
+    name: 'set_huawei_cookie',
+    description: `设置华为开发者登录 Cookie，用于突破匿名态的次数限制。
+
+## 使用场景
+当 ask_huawei_qa 提示次数限制或需要登录时，使用此工具设置 Cookie。
+
+## 如何获取 Cookie
+1. 打开浏览器，登录 developer.huawei.com
+2. 打开开发者工具 (F12) → Network 标签
+3. 在页面上使用智能问答功能提问
+4. 找到 dialog/submission 请求
+5. 复制 Request Headers 中的 Cookie 值
+
+## 使用示例
+set_huawei_cookie({ cookie: "your_full_cookie_value_here" })
+
+设置成功后，后续的 ask_huawei_qa 调用将使用登录态，无次数限制。`,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        cookie: {
+          type: 'string',
+          description: '完整的 Cookie 字符串，从浏览器开发者工具中复制'
+        }
+      },
+      required: ['cookie']
+    }
+  },
+  {
+    name: 'ask_huawei_qa_batch',
+    description: `批量向华为开发者官方智能问答助手提问（并行处理）。
+
+## 使用场景
+当需要同时查询多个问题时使用此工具：
+- 一次调用处理多个相关问题
+- 服务器端并行执行，大幅节省时间
+- 适用于需要查询多个不同主题的场景
+
+## 与 ask_huawei_qa 的区别
+- ask_huawei_qa：单次提问，多个问题需要多次调用
+- ask_huawei_qa_batch：批量提问，一次调用处理多个问题（并行执行）
+
+## 使用示例
+
+示例1 - 批量查询不同主题：
+调用：ask_huawei_qa_batch({ queries: ["Navigation 组件用法", "List 性能优化", "@State 和 @Prop 区别"] })
+
+示例2 - 批量查询相关问题：
+调用：ask_huawei_qa_batch({ queries: ["如何实现页面跳转", "如何传递参数", "如何返回数据"] })
+
+## 性能优势
+假设单个问题响应时间 60 秒：
+- 串行调用 3 个问题：60s + 60s + 60s = 180 秒
+- 批量并行调用：约 60 秒（取决于最慢的问题）`,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        queries: {
+          type: 'array',
+          items: {
+            type: 'string'
+          },
+          description: '问题列表，支持中英文。例如：["Navigation 组件用法", "List 性能优化"]'
+        },
+        newSession: {
+          type: 'boolean',
+          description: '是否开启新会话（默认 false，复用之前的会话上下文）',
+          default: false
+        }
+      },
+      required: ['queries']
+    }
+  }
+];
+
+async function handleToolCall(name: string, args: Record<string, unknown>): Promise<string> {
+  switch (name) {
+    case 'search_arkts_docs': {
+      const query = args.query as string;
+      const limit = Math.min(Math.max(1, (args.limit as number) || 10), 50);
+
+      const results = searcher.search(query, limit);
+
+      if (results.length === 0) {
+        return `No documents found for query: "${query}"`;
+      }
+
+      const formatted = results.map((r, i) =>
+        `${i + 1}. **${r.title}**\n   objectId: ${r.objectId}\n   Preview: ${r.preview}\n   URL: ${r.url}`
+      ).join('\n\n');
+
+      return `Found ${results.length} documents:\n\n${formatted}`;
+    }
+
+    case 'get_arkts_doc': {
+      const objectId = args.objectId as string;
+      const result = searcher.getDocByObjectId(objectId);
+
+      if (!result) {
+        return `Document not found: ${objectId}`;
+      }
+
+      return `# ${result.metadata.title}\n\nURL: ${result.metadata.url}\n\n---\n\n${result.content}`;
+    }
+
+    case 'list_arkts_topics': {
+      const topics = searcher.listTopics();
+      const total = searcher.getTotalDocs();
+
+      const formatted = topics.map(t => `- ${t.topic}: ${t.count} documents`).join('\n');
+
+      return `Total documents: ${total}\n\nTopics:\n${formatted}`;
+    }
+
+    case 'ask_huawei_qa': {
+      const query = args.query as string;
+      const newSession = (args.newSession as boolean) || false;
+
+      try {
+        // 优先使用登录态
+        const cookie = getCookie();
+        let answer: string;
+
+        if (cookie) {
+          console.error('[arkts-mcp] Using authenticated mode for Huawei QA');
+          try {
+            answer = await huaweiQAAuth(query, newSession);
+          } catch (authError) {
+            console.error('[arkts-mcp] Auth mode failed, falling back to anonymous:', authError);
+            answer = await huaweiQA(query, newSession);
+          }
+        } else {
+          console.error('[arkts-mcp] Using anonymous mode for Huawei QA (no cookie configured)');
+          answer = await huaweiQA(query, newSession);
+        }
+
+        return answer;
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        return `华为智能问答调用失败: ${errorMsg}\n\n建议使用 search_arkts_docs 搜索本地文档作为备选。`;
+      }
+    }
+
+    case 'set_huawei_cookie': {
+      const cookie = args.cookie as string;
+
+      if (!cookie || cookie.trim().length === 0) {
+        return '错误：Cookie 不能为空';
+      }
+
+      try {
+        // 验证 Cookie 是否有效
+        console.error('[arkts-mcp] Validating cookie...');
+        const isValid = await validateCookie(cookie);
+
+        if (isValid) {
+          setCookie(cookie);
+          return `✅ Cookie 设置成功！
+
+Cookie 已验证有效并保存。后续的 ask_huawei_qa 调用将使用登录态，无次数限制。
+
+配置文件位置：
+${process.env.APPDATA || process.env.HOME}/arkts-mcp/config.json`;
+        } else {
+          return `⚠️ Cookie 可能已过期或无效
+
+Cookie 已保存，但验证未通过。可能的原因：
+1. Cookie 已过期，请重新登录获取
+2. Cookie 格式不完整，请确保复制了完整的 Cookie 字符串
+3. 网络问题，请稍后重试
+
+您可以尝试使用 ask_huawei_qa 测试是否正常工作。`;
+        }
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        return `设置 Cookie 时发生错误: ${errorMsg}`;
+      }
+    }
+
+    case 'ask_huawei_qa_batch': {
+      const queries = args.queries as string[];
+      const newSession = (args.newSession as boolean) || false;
+
+      if (!queries || !Array.isArray(queries) || queries.length === 0) {
+        return '错误：queries 参数必须是非空数组';
+      }
+
+      if (queries.length > 10) {
+        return '错误：最多支持同时提问 10 个问题';
+      }
+
+      try {
+        // 优先使用登录态
+        const cookie = getCookie();
+        let results: Array<{ query: string; answer: string; success: boolean; error?: string }>;
+
+        if (cookie) {
+          console.error('[arkts-mcp] Using authenticated mode for Huawei QA batch');
+          try {
+            results = await huaweiQAAuthBatch(queries, newSession);
+          } catch (authError) {
+            console.error('[arkts-mcp] Auth mode failed, falling back to anonymous:', authError);
+            results = await huaweiQABatch(queries, newSession);
+          }
+        } else {
+          console.error('[arkts-mcp] Using anonymous mode for Huawei QA batch (no cookie configured)');
+          results = await huaweiQABatch(queries, newSession);
+        }
+
+        // 格式化输出
+        let output = `## 批量问答结果 (${results.length} 个问题)\n\n`;
+
+        results.forEach((result, index) => {
+          output += `### 问题 ${index + 1}: ${result.query}\n\n`;
+
+          if (result.success) {
+            // 截取前 500 个字符作为预览
+            const preview = result.answer.length > 500
+              ? result.answer.substring(0, 500) + '\n\n...(内容已截断，完整答案过长)'
+              : result.answer;
+            output += `${preview}\n\n`;
+          } else {
+            output += `❌ 失败: ${result.error || 'Unknown error'}\n\n`;
+          }
+
+          output += `---\n\n`;
+        });
+
+        const successCount = results.filter(r => r.success).length;
+        output += `> 统计：${successCount}/${results.length} 个问题成功回答`;
+
+        return output;
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        return `批量问答调用失败: ${errorMsg}\n\n建议使用 search_arkts_docs 搜索本地文档作为备选。`;
+      }
+    }
+
+    default:
+      return `Unknown tool: ${name}`;
+  }
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+
+  if (args.includes('--http')) {
+    // HTTP mode
+    const { startHttpServer } = await import('./http-server.js');
+    startHttpServer(searcher);
+  } else {
+    // stdio mode (default)
+    const server = new Server(
+      {
+        name: 'arkts-docs-mcp-server',
+        version: '1.0.0',
+      },
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
+
+    server.setRequestHandler(ListToolsRequestSchema, async () => ({
+      tools: TOOLS,
+    }));
+
+    server.setRequestHandler(CallToolRequestSchema, async (request) => {
+      const { name, arguments: args } = request.params;
+      const result = await handleToolCall(name, args || {});
+      return {
+        content: [{ type: 'text', text: result }],
+      };
+    });
+
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+
+    console.error('[arkts-mcp] Server started in stdio mode');
+  }
+}
+
+main().catch((error) => {
+  console.error('[arkts-mcp] Fatal error:', error);
+  process.exit(1);
+});
+
+export { handleToolCall, TOOLS };

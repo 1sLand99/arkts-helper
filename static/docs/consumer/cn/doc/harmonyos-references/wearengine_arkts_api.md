@@ -1,0 +1,6 @@
+# ArkTS API
+
+  * **[wearEngine(穿戴设备能力开放)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/wearengine_api)**  
+
+
+

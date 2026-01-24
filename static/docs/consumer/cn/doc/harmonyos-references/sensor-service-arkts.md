@@ -1,0 +1,12 @@
+# ArkTS API
+
+  * **[@ohos.sensor (传感器)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-sensor)**  
+
+  * **[@ohos.vibrator (振动)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-vibrator)**  
+
+  * **[@system.sensor (传感器)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-system-sensor)**  
+
+  * **[@system.vibrator (振动)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-system-vibrate)**  
+
+
+

@@ -1,0 +1,10 @@
+# ArkTS API
+
+  * **[rcp](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/remote-communication-rcp)**  
+
+  * **[urpc](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/remote-communication-urpcapi)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/remote-communication-error-code)**  
+
+
+

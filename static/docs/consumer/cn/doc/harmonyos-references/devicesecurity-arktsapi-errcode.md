@@ -1,0 +1,20 @@
+# ArkTS API错误码
+
+  * **[DeviceVerify（应用设备状态检测）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/devicesecurity-arktsapi-errcode-deviceverify)**  
+
+  * **[SafetyDetect（安全检测）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/devicesecurity-arktsapi-errcode-safetydetect)**  
+
+  * **[TrustedAppService（可信应用服务）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/devicesecurity-arktsapi-errcode-taas)**  
+
+  * **[BusinessRiskIntelligentDetection（业务风险检测）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/devicesecurity-arktsapi-errcode-brid)**  
+
+  * **[SecurityAudit（安全审计）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/devicesecurity-arktsapi-errcode-securityaudit)**  
+
+  * **[AntifraudPicker（反诈选择器）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/devicesecurity-arktsapi-errcode-antifraudpicker)**  
+
+  * **[TrustedAuthentication （数字盾服务）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/devicesecurity-arktsapi-errcode-trusted-auth)**  
+
+  * **[DlpAntiPeep（防窥保护）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/devicesecurity-arktsapi-errcode-dlpantipeep)**  
+
+
+

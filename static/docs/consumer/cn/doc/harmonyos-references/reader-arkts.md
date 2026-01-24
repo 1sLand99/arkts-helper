@@ -1,0 +1,8 @@
+# ArkTS API
+
+  * **[bookParser（书籍解析能力）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/reader-book-parser)**  
+
+  * **[readerCore（阅读核心能力）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/reader-read-core)**  
+
+
+

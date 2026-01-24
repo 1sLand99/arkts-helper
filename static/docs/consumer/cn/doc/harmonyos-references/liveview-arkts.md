@@ -1,0 +1,12 @@
+# ArkTS API
+
+  * **[liveViewManager](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/liveview-liveviewmanager)**  
+
+  * **[LiveViewLockScreenExtensionAbility](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/liveview-lock-screen-ability)**  
+
+  * **[LiveViewLockScreenExtensionContext](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/liveview-lock-screen-context)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/liveview-error-code)**  
+
+
+

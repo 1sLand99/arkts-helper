@@ -1,0 +1,12 @@
+# ArkTS API
+
+  * **[gamePlayer（基础游戏服务）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/gameservice-gameplayer)**  
+
+  * **[gamePerformance (游戏场景感知)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/gameservice-gameperformance)**  
+
+  * **[gameNearbyTransfer(游戏近场快传)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/gameservice-nearbytransfer)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/gameservice-error-code)**  
+
+
+

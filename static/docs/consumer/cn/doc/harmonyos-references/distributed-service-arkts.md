@@ -1,0 +1,14 @@
+# ArkTS API
+
+  * **[@ohos.distributedDeviceManager (设备管理)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-distributeddevicemanager)**  
+
+  * **[@ohos.distributedsched.abilityConnectionManager (应用多端协同管理)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-distributed-abilityconnectionmanager)**  
+
+  * **[@ohos.application.DistributedExtensionAbility (协同Extension)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-distributedextensionability)**  
+
+  * **[@ohos.distributedsched.linkEnhance (增强连接)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-link-enhance)**  
+
+  * **[@ohos.distributedsched.proxyChannelManager (代理通道管理)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-proxychannelmanager)**  
+
+
+

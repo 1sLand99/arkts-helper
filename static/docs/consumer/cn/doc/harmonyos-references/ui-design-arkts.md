@@ -1,0 +1,12 @@
+# ArkTS API
+
+  * **[hdsDrawable](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ui-design-hdsdrawable)**  
+
+  * **[symbolRegister](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ui-design-symbolregister)**  
+
+  * **[hdsEffect](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ui-design-hdseffect)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ui-design-error-code)**  
+
+
+

@@ -1,0 +1,8 @@
+# ArkTS API
+
+  * **[fileManagerService](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/filemanagerservice-arkts-filemanagerservice)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/filemanagerservice-arkts-errorcode)**  
+
+
+

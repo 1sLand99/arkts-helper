@@ -1,0 +1,10 @@
+# ArkTS API
+
+  * **[textToSpeech（文本转语音）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/hms-ai-texttospeech)**  
+
+  * **[speechRecognizer（语音识别）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/hms-ai-speechrecognizer)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-corespeech)**  
+
+
+

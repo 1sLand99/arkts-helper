@@ -1,0 +1,10 @@
+# 组件扩展装饰器
+
+  * **[定义可动画属性 (@AnimatableExtend)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-animatable-extend)**  
+
+  * **[@Entry：页面入口](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-universal-entry)**  
+
+  * **[wrapBuilder](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-universal-wrapbuilder)**  
+
+
+

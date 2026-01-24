@@ -1,0 +1,10 @@
+# ArkTS API
+
+  * **[TextReader（朗读控件）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/speech-textreader-api)**  
+
+  * **[ReadStateCode (播报状态)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/speech-readstatecode)**  
+
+  * **[WindowManager (窗口管理)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/speech-windowmanager)**  
+
+
+

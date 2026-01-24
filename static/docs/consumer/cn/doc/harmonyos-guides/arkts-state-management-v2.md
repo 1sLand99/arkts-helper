@@ -1,0 +1,10 @@
+# 状态管理（V2）
+
+  * **[V2所属装饰器](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-v2-decorators)**  
+
+  * **[其他状态管理](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-new-other-state-mgmt)**  
+
+  * **[MVVM模式（状态管理V2）](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-mvvm-v2)**  
+
+
+

@@ -1,0 +1,14 @@
+# ArkTS API
+
+  * **[paymentService (鸿蒙支付服务)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/payment-paymentservice)**  
+
+  * **[realNameService(身份验证服务)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/payment-realnameservice)**  
+
+  * **[ecnyPaymentService (数字人民币服务)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/payment-digitalcnyservice)**  
+
+  * **[thirdPaymentService(三方支付服务)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/payment-third-payment-service)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/payment-error-code)**  
+
+
+

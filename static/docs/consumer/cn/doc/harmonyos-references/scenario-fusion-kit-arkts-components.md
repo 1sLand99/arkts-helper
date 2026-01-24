@@ -1,0 +1,14 @@
+# ArkTS组件
+
+  * **[FunctionalButton（Button组件）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/scenario-fusion-functionalbutton)**  
+
+  * **[functionalButtonComponentManager(场景化融合Button组件管理)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/scenario-fusion-functionalbuttoncomponentmanager)**  
+
+  * **[FunctionalInput（Input组件）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/scenario-fusion-functionalinput)**  
+
+  * **[functionalInputComponentManager(场景化融合Input组件管理)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/scenario-fusion-functionalinputcomponentmanager)**  
+
+  * **[ArkTS组件错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/scenario-fusion-error-code)**  
+
+
+

@@ -1,0 +1,12 @@
+# ArkTS API
+
+  * **[navigationInfoMgr（导航信息管理）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/car-navigationinfomgr)**  
+
+  * **[smartMobilityCommon（智慧出行场景）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/car-smartmobilitycommon)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/car-error-code)**  
+
+  * **[附录](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/car-appendix)**  
+
+
+

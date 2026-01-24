@@ -1,0 +1,10 @@
+# 几何图形绘制
+
+  * **[几何图形绘制概述](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-shape-overview)**  
+
+  * **[绘制几何图形 (Shape)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-geometric-shape-drawing)**  
+
+  * **[形状裁剪（clipShape）](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-clip-shape)**  
+
+
+

@@ -1,0 +1,8 @@
+# 图形图像
+
+  * **[屏幕错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-display)**  
+
+  * **[窗口错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-window)**  
+
+
+

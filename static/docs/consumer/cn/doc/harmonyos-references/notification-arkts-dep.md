@@ -1,0 +1,8 @@
+# 已停止维护的接口
+
+  * **[@ohos.notification (Notification模块)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-notification)**  
+
+  * **[@system.notification (通知消息)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-system-notification)**  
+
+
+

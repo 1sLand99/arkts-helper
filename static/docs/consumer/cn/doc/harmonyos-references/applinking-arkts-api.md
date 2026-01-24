@@ -1,0 +1,6 @@
+# ArkTS API
+
+  * **[deferredLink (延迟链接能力)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/applinking-deferredlink-api)**  
+
+
+

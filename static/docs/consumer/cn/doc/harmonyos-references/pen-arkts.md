@@ -1,0 +1,14 @@
+# ArkTS API
+
+  * **[HandwriteController (手写套件功能)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/pen-handwritecontroller)**  
+
+  * **[PointPredictor（报点预测功能）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/pen-pointpredictor)**  
+
+  * **[InstantShapeGenerator（一笔成形功能）](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/pen-instantsshapegenerator)**  
+
+  * **[imageFeaturePicker (全局取色功能)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/pen-imagefeaturepicker)**  
+
+  * **[stylusInteraction (手写笔交互功能)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/pen-stylusinteraction)**  
+
+
+

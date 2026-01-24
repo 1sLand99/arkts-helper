@@ -1,0 +1,10 @@
+# ArkTS API
+
+  * **[insightIntent](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/intents-arkts-api-insightintent)**  
+
+  * **[InsightIntentUIExtensionAbility (意图调用UI扩展能力)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/intents-arkts-api-insightintent-uiextension)**  
+
+  * **[ArkTS API错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/intents-arkts-api-errorcodes-insightintent)**  
+
+
+

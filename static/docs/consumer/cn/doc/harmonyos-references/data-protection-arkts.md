@@ -1,0 +1,8 @@
+# ArkTS API
+
+  * **[@ohos.dlpPermission (数据防泄漏)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-dlppermission)**  
+
+  * **[@ohos.security.identifySensitiveContent (识别敏感内容)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-identifysensitivecontent)**  
+
+
+

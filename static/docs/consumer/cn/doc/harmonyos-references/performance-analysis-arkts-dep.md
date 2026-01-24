@@ -1,0 +1,10 @@
+# 已停止维护的接口
+
+  * **[@ohos.bytrace (性能打点)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-bytrace)**  
+
+  * **[@ohos.hiAppEvent (应用打点)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-hiappevent)**  
+
+  * **[@ohos.faultLogger (故障日志获取)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-faultlogger)**  
+
+
+

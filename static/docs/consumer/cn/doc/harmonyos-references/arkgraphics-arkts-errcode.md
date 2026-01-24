@@ -1,0 +1,8 @@
+# 错误码
+
+  * **[色彩管理错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-colorspace-manager)**  
+
+  * **[图形绘制与显示错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-drawing)**  
+
+
+

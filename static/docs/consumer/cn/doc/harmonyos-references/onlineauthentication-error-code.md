@@ -1,0 +1,12 @@
+# ArkTS API错误码
+
+  * **[FIDO](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/onlineauthentication-error-code-fido)**  
+
+  * **[IFAA](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/onlineauthentication-error-code-ifaa)**  
+
+  * **[SOTER](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/onlineauthentication-error-code-soter)**  
+
+  * **[通行密钥](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/onlineauthentication-error-code-passkey)**  
+
+
+

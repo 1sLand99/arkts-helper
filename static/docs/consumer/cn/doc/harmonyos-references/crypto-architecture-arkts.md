@@ -1,0 +1,8 @@
+# ArkTS API
+
+  * **[@ohos.security.cryptoFramework (加解密算法库框架)](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-cryptoframework)**  
+
+  * **[已停止维护的接口](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/crypto-architecture-arkts-dep)**  
+
+
+

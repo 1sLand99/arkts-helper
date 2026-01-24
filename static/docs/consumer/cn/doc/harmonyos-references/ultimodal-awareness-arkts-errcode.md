@@ -1,0 +1,12 @@
+# 错误码
+
+  * **[动作感知错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-motion)**  
+
+  * **[记忆链接错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-metadatabinding)**  
+
+  * **[设备状态感知错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-devicestatus)**  
+
+  * **[用户状态感知错误码](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/errorcode-userstatus)**  
+
+
+
