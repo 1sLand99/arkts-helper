@@ -90,7 +90,7 @@ function getAvailableResources(): Resource[] {
 // Define MCP tools
 const TOOLS: Tool[] = [
   {
-    name: 'search_arkts_docs',
+    name: 'find_docs',
     description: `搜索 HarmonyOS ArkTS 官方开发文档。
 
 ## 使用场景
@@ -123,7 +123,7 @@ const TOOLS: Tool[] = [
 - 搜索组件时加上"组件"后缀，如"Button组件"
 - 搜索装饰器时可以带@符号，如"@State"
 
-返回匹配的文档列表，包含标题、预览和 objectId（用于获取完整内容）。`,
+返回匹配的文档列表，包含标题、预览和 objectId（用于 read_doc 获取完整内容）。`,
     inputSchema: {
       type: 'object',
       properties: {
@@ -141,23 +141,23 @@ const TOOLS: Tool[] = [
     }
   },
   {
-    name: 'get_arkts_doc',
-    description: `获取 ArkTS 文档的完整内容。
+    name: 'read_doc',
+    description: `读取 ArkTS 文档的完整内容。
 
 ## 使用场景
-在使用 search_arkts_docs 搜索后，根据返回的 objectId 获取文档的完整 Markdown 内容。
+在使用 find_docs 搜索后，根据返回的 objectId 读取文档的完整 Markdown 内容。
 
 ## 使用流程
-1. 先调用 search_arkts_docs 搜索相关文档
+1. 先调用 find_docs 搜索相关文档
 2. 从搜索结果中选择最相关的文档
 3. 使用该文档的 objectId 调用此工具获取完整内容
 
 ## 使用示例
 
-示例 - 搜索后获取完整文档：
-1. 调用：search_arkts_docs({ query: "State装饰器" })
+示例 - 搜索后读取完整文档：
+1. 调用：find_docs({ query: "State装饰器" })
 2. 从结果中找到 objectId: "arkts-state"
-3. 调用：get_arkts_doc({ objectId: "arkts-state" })
+3. 调用：read_doc({ objectId: "arkts-state" })
 
 返回文档的完整 Markdown 内容，包含代码示例和详细说明。`,
     inputSchema: {
@@ -165,14 +165,14 @@ const TOOLS: Tool[] = [
       properties: {
         objectId: {
           type: 'string',
-          description: '文档的唯一标识符，从 search_arkts_docs 的搜索结果中获取'
+          description: '文档的唯一标识符，从 find_docs 的搜索结果中获取'
         }
       },
       required: ['objectId']
     }
   },
   {
-    name: 'list_arkts_topics',
+    name: 'list_doc_topics',
     description: `列出 ArkTS 文档的所有主题分类。
 
 ## 使用场景
@@ -190,7 +190,7 @@ const TOOLS: Tool[] = [
     }
   },
   {
-    name: 'ask_huawei_qa',
+    name: 'ask_ai',
     description: `向华为开发者官方智能问答助手提问。
 
 ## 使用场景
@@ -200,17 +200,17 @@ const TOOLS: Tool[] = [
 - 错误排查和问题解决
 - 获取最新的开发建议
 
-## 与 search_arkts_docs 的区别
-- search_arkts_docs：搜索本地文档，返回原始文档内容
-- ask_huawei_qa：调用华为官方 AI，返回整合后的智能回答
+## 与 find_docs 的区别
+- find_docs：搜索本地文档，返回原始文档内容
+- ask_ai：调用华为官方 AI，返回整合后的智能回答
 
 ## 使用示例
 
 示例1 - 用户问："Navigation 怎么实现页面跳转并传参？"
-调用：ask_huawei_qa({ query: "Navigation 怎么实现页面跳转并传参" })
+调用：ask_ai({ query: "Navigation 怎么实现页面跳转并传参" })
 
 示例2 - 用户问："List 组件性能优化有哪些方法？"
-调用：ask_huawei_qa({ query: "List 组件性能优化方法" })
+调用：ask_ai({ query: "List 组件性能优化方法" })
 
 返回华为官方智能助手的回答，包含参考链接。`,
     inputSchema: {
@@ -230,11 +230,11 @@ const TOOLS: Tool[] = [
     }
   },
   {
-    name: 'set_huawei_cookie',
-    description: `设置华为开发者登录 Cookie，用于突破匿名态的次数限制。
+    name: 'set_ai_auth',
+    description: `设置 AI 问答的登录凭证，用于突破匿名态的次数限制。
 
 ## 使用场景
-当 ask_huawei_qa 提示次数限制或需要登录时，使用此工具设置 Cookie。
+当 ask_ai 提示次数限制或需要登录时，使用此工具设置登录凭证。
 
 ## 如何获取 Cookie
 1. 打开浏览器，登录 developer.huawei.com
@@ -244,9 +244,9 @@ const TOOLS: Tool[] = [
 5. 复制 Request Headers 中的 Cookie 值
 
 ## 使用示例
-set_huawei_cookie({ cookie: "your_full_cookie_value_here" })
+set_ai_auth({ cookie: "your_full_cookie_value_here" })
 
-设置成功后，后续的 ask_huawei_qa 调用将使用登录态，无次数限制。`,
+设置成功后，后续的 ask_ai 调用将使用登录态，无次数限制。`,
     inputSchema: {
       type: 'object',
       properties: {
@@ -259,7 +259,7 @@ set_huawei_cookie({ cookie: "your_full_cookie_value_here" })
     }
   },
   {
-    name: 'ask_huawei_qa_batch',
+    name: 'ask_ai_batch',
     description: `批量向华为开发者官方智能问答助手提问（并行处理）。
 
 ## 使用场景
@@ -268,17 +268,17 @@ set_huawei_cookie({ cookie: "your_full_cookie_value_here" })
 - 服务器端并行执行，大幅节省时间
 - 适用于需要查询多个不同主题的场景
 
-## 与 ask_huawei_qa 的区别
-- ask_huawei_qa：单次提问，多个问题需要多次调用
-- ask_huawei_qa_batch：批量提问，一次调用处理多个问题（并行执行）
+## 与 ask_ai 的区别
+- ask_ai：单次提问，多个问题需要多次调用
+- ask_ai_batch：批量提问，一次调用处理多个问题（并行执行）
 
 ## 使用示例
 
 示例1 - 批量查询不同主题：
-调用：ask_huawei_qa_batch({ queries: ["Navigation 组件用法", "List 性能优化", "@State 和 @Prop 区别"] })
+调用：ask_ai_batch({ queries: ["Navigation 组件用法", "List 性能优化", "@State 和 @Prop 区别"] })
 
 示例2 - 批量查询相关问题：
-调用：ask_huawei_qa_batch({ queries: ["如何实现页面跳转", "如何传递参数", "如何返回数据"] })
+调用：ask_ai_batch({ queries: ["如何实现页面跳转", "如何传递参数", "如何返回数据"] })
 
 ## 性能优势
 假设单个问题响应时间 60 秒：
@@ -304,19 +304,19 @@ set_huawei_cookie({ cookie: "your_full_cookie_value_here" })
     }
   },
   {
-    name: 'get_qa_full_content',
-    description: `获取华为智能问答的完整内容。
+    name: 'read_more',
+    description: `读取被截断的完整回答内容。
 
 ## 使用场景
-当 ask_huawei_qa 返回的内容被截断时，使用此工具获取完整内容。
+当 ask_ai 返回的内容被截断时，使用此工具读取完整内容。
 
 ## 使用流程
-1. 调用 ask_huawei_qa 获取回答
+1. 调用 ask_ai 获取回答
 2. 如果回答中包含 "内容过长已缓存" 的提示和 resourceId
-3. 使用该 resourceId 调用此工具获取完整内容
+3. 使用该 resourceId 调用此工具读取完整内容
 
 ## 使用示例
-get_qa_full_content({ resourceId: "qa-result-1-1706123456789" })
+read_more({ resourceId: "qa-result-1-1706123456789" })
 
 返回完整的 Markdown 格式回答内容。`,
     inputSchema: {
@@ -324,7 +324,7 @@ get_qa_full_content({ resourceId: "qa-result-1-1706123456789" })
       properties: {
         resourceId: {
           type: 'string',
-          description: '资源 ID，从 ask_huawei_qa 的回答中获取'
+          description: '资源 ID，从 ask_ai 的回答中获取'
         }
       },
       required: ['resourceId']
@@ -334,7 +334,7 @@ get_qa_full_content({ resourceId: "qa-result-1-1706123456789" })
 
 async function handleToolCall(name: string, args: Record<string, unknown>): Promise<string> {
   switch (name) {
-    case 'search_arkts_docs': {
+    case 'find_docs': {
       const query = args.query as string;
       const limit = Math.min(Math.max(1, (args.limit as number) || 10), 50);
 
@@ -351,7 +351,7 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
       return `Found ${results.length} documents:\n\n${formatted}`;
     }
 
-    case 'get_arkts_doc': {
+    case 'read_doc': {
       const objectId = args.objectId as string;
       const result = searcher.getDocByObjectId(objectId);
 
@@ -362,7 +362,7 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
       return `# ${result.metadata.title}\n\nURL: ${result.metadata.url}\n\n---\n\n${result.content}`;
     }
 
-    case 'list_arkts_topics': {
+    case 'list_doc_topics': {
       const topics = searcher.listTopics();
       const total = searcher.getTotalDocs();
 
@@ -371,7 +371,7 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
       return `Total documents: ${total}\n\nTopics:\n${formatted}`;
     }
 
-    case 'ask_huawei_qa': {
+    case 'ask_ai': {
       const query = args.query as string;
       const newSession = (args.newSession as boolean) || false;
 
@@ -400,17 +400,17 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
           const lastNewline = preview.lastIndexOf('\n');
           const cleanPreview = lastNewline > CONTENT_THRESHOLD * 0.5 ? preview.substring(0, lastNewline) : preview;
 
-          return `${cleanPreview}\n\n---\n**⚠️ 内容过长已缓存**\n\n完整回答共 ${answer.length} 字符，已超出显示限制。\n\n**获取完整内容方式：**\n1. 调用工具：\`get_qa_full_content({ resourceId: "${resourceId}" })\`\n2. 或通过 Resource URI：\`arkts-qa://${resourceId}\`\n\n> 提示：缓存有效期为 1 小时`;
+          return `${cleanPreview}\n\n---\n**⚠️ 内容过长已缓存**\n\n完整回答共 ${answer.length} 字符，已超出显示限制。\n\n**获取完整内容方式：**\n调用工具：\`read_more({ resourceId: "${resourceId}" })\`\n\n> 提示：缓存有效期为 1 小时`;
         }
 
         return answer;
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-        return `华为智能问答调用失败: ${errorMsg}\n\n建议使用 search_arkts_docs 搜索本地文档作为备选。`;
+        return `华为智能问答调用失败: ${errorMsg}\n\n建议使用 find_docs 搜索本地文档作为备选。`;
       }
     }
 
-    case 'get_qa_full_content': {
+    case 'read_more': {
       const resourceId = args.resourceId as string;
 
       if (!resourceId) {
@@ -419,13 +419,13 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
 
       const resource = resourceCache.get(resourceId);
       if (!resource) {
-        return `未找到资源: ${resourceId}\n\n可能的原因：\n1. 资源 ID 不正确\n2. 资源已过期（超过1小时）\n\n请重新调用 ask_huawei_qa 获取新的回答。`;
+        return `未找到资源: ${resourceId}\n\n可能的原因：\n1. 资源 ID 不正确\n2. 资源已过期（超过1小时）\n\n请重新调用 ask_ai 获取新的回答。`;
       }
 
       return resource.content;
     }
 
-    case 'set_huawei_cookie': {
+    case 'set_ai_auth': {
       const cookie = args.cookie as string;
 
       if (!cookie || cookie.trim().length === 0) {
@@ -441,7 +441,7 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
           setCookie(cookie);
           return `✅ Cookie 设置成功！
 
-Cookie 已验证有效并保存。后续的 ask_huawei_qa 调用将使用登录态，无次数限制。
+Cookie 已验证有效并保存。后续的 ask_ai 调用将使用登录态，无次数限制。
 
 配置文件位置：
 ${process.env.APPDATA || process.env.HOME}/arkts-mcp/config.json`;
@@ -453,7 +453,7 @@ Cookie 已保存，但验证未通过。可能的原因：
 2. Cookie 格式不完整，请确保复制了完整的 Cookie 字符串
 3. 网络问题，请稍后重试
 
-您可以尝试使用 ask_huawei_qa 测试是否正常工作。`;
+您可以尝试使用 ask_ai 测试是否正常工作。`;
         }
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
@@ -461,7 +461,7 @@ Cookie 已保存，但验证未通过。可能的原因：
       }
     }
 
-    case 'ask_huawei_qa_batch': {
+    case 'ask_ai_batch': {
       const queries = args.queries as string[];
       const newSession = (args.newSession as boolean) || false;
 
@@ -516,7 +516,7 @@ Cookie 已保存，但验证未通过。可能的原因：
         return output;
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-        return `批量问答调用失败: ${errorMsg}\n\n建议使用 search_arkts_docs 搜索本地文档作为备选。`;
+        return `批量问答调用失败: ${errorMsg}\n\n建议使用 find_docs 搜索本地文档作为备选。`;
       }
     }
 
