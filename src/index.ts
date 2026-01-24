@@ -5,7 +5,10 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
   Tool,
+  Resource,
 } from '@modelcontextprotocol/sdk/types.js';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -46,6 +49,43 @@ const DEFAULT_DOCS_DIR = path.join(packageRoot, 'static/docs');
 const DOCS_DIR = process.env.ARKTS_DOCS_DIR || DEFAULT_DOCS_DIR;
 
 const searcher = new DocsSearcher(DOCS_DIR);
+
+// ============ Resource Cache for Long QA Results ============
+const CONTENT_THRESHOLD = 1500; // Characters threshold for truncation
+const resourceCache = new Map<string, { content: string; query: string; timestamp: number }>();
+let resourceIdCounter = 0;
+
+function generateResourceId(): string {
+  return `qa-result-${++resourceIdCounter}-${Date.now()}`;
+}
+
+function addToResourceCache(query: string, content: string): string {
+  const resourceId = generateResourceId();
+  resourceCache.set(resourceId, {
+    content,
+    query,
+    timestamp: Date.now()
+  });
+
+  // Clean up old resources (older than 1 hour)
+  const oneHourAgo = Date.now() - 60 * 60 * 1000;
+  for (const [id, data] of resourceCache.entries()) {
+    if (data.timestamp < oneHourAgo) {
+      resourceCache.delete(id);
+    }
+  }
+
+  return resourceId;
+}
+
+function getAvailableResources(): Resource[] {
+  return Array.from(resourceCache.entries()).map(([id, data]) => ({
+    uri: `arkts-qa://${id}`,
+    name: `QA: ${data.query.substring(0, 50)}${data.query.length > 50 ? '...' : ''}`,
+    description: `华为智能问答结果 - ${new Date(data.timestamp).toLocaleString()}`,
+    mimeType: 'text/markdown'
+  }));
+}
 
 // Define MCP tools
 const TOOLS: Tool[] = [
@@ -262,6 +302,33 @@ set_huawei_cookie({ cookie: "your_full_cookie_value_here" })
       },
       required: ['queries']
     }
+  },
+  {
+    name: 'get_qa_full_content',
+    description: `获取华为智能问答的完整内容。
+
+## 使用场景
+当 ask_huawei_qa 返回的内容被截断时，使用此工具获取完整内容。
+
+## 使用流程
+1. 调用 ask_huawei_qa 获取回答
+2. 如果回答中包含 "内容过长已缓存" 的提示和 resourceId
+3. 使用该 resourceId 调用此工具获取完整内容
+
+## 使用示例
+get_qa_full_content({ resourceId: "qa-result-1-1706123456789" })
+
+返回完整的 Markdown 格式回答内容。`,
+    inputSchema: {
+      type: 'object',
+      properties: {
+        resourceId: {
+          type: 'string',
+          description: '资源 ID，从 ask_huawei_qa 的回答中获取'
+        }
+      },
+      required: ['resourceId']
+    }
   }
 ];
 
@@ -326,11 +393,36 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
           answer = await huaweiQA(query, newSession);
         }
 
+        // Check if content exceeds threshold
+        if (answer.length > CONTENT_THRESHOLD) {
+          const resourceId = addToResourceCache(query, answer);
+          const preview = answer.substring(0, CONTENT_THRESHOLD);
+          const lastNewline = preview.lastIndexOf('\n');
+          const cleanPreview = lastNewline > CONTENT_THRESHOLD * 0.5 ? preview.substring(0, lastNewline) : preview;
+
+          return `${cleanPreview}\n\n---\n**⚠️ 内容过长已缓存**\n\n完整回答共 ${answer.length} 字符，已超出显示限制。\n\n**获取完整内容方式：**\n1. 调用工具：\`get_qa_full_content({ resourceId: "${resourceId}" })\`\n2. 或通过 Resource URI：\`arkts-qa://${resourceId}\`\n\n> 提示：缓存有效期为 1 小时`;
+        }
+
         return answer;
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
         return `华为智能问答调用失败: ${errorMsg}\n\n建议使用 search_arkts_docs 搜索本地文档作为备选。`;
       }
+    }
+
+    case 'get_qa_full_content': {
+      const resourceId = args.resourceId as string;
+
+      if (!resourceId) {
+        return '错误：resourceId 参数不能为空';
+      }
+
+      const resource = resourceCache.get(resourceId);
+      if (!resource) {
+        return `未找到资源: ${resourceId}\n\n可能的原因：\n1. 资源 ID 不正确\n2. 资源已过期（超过1小时）\n\n请重新调用 ask_huawei_qa 获取新的回答。`;
+      }
+
+      return resource.content;
     }
 
     case 'set_huawei_cookie': {
@@ -450,6 +542,7 @@ async function main() {
       {
         capabilities: {
           tools: {},
+          resources: {},
         },
       }
     );
@@ -463,6 +556,35 @@ async function main() {
       const result = await handleToolCall(name, args || {});
       return {
         content: [{ type: 'text', text: result }],
+      };
+    });
+
+    // Resource handlers
+    server.setRequestHandler(ListResourcesRequestSchema, async () => ({
+      resources: getAvailableResources(),
+    }));
+
+    server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+      const uri = request.params.uri;
+      const match = uri.match(/^arkts-qa:\/\/(.+)$/);
+
+      if (!match) {
+        throw new Error(`Invalid resource URI: ${uri}`);
+      }
+
+      const resourceId = match[1];
+      const resource = resourceCache.get(resourceId);
+
+      if (!resource) {
+        throw new Error(`Resource not found: ${resourceId}`);
+      }
+
+      return {
+        contents: [{
+          uri,
+          mimeType: 'text/markdown',
+          text: resource.content
+        }]
       };
     });
 
