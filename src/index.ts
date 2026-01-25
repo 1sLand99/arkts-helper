@@ -498,11 +498,18 @@ Cookie 已保存，但验证未通过。可能的原因：
           output += `### 问题 ${index + 1}: ${result.query}\n\n`;
 
           if (result.success) {
-            // 截取前 500 个字符作为预览
-            const preview = result.answer.length > 500
-              ? result.answer.substring(0, 500) + '\n\n...(内容已截断，完整答案过长)'
-              : result.answer;
-            output += `${preview}\n\n`;
+            // Check if content exceeds threshold
+            if (result.answer.length > CONTENT_THRESHOLD) {
+              const resourceId = addToResourceCache(result.query, result.answer);
+              const preview = result.answer.substring(0, 500);
+              const lastNewline = preview.lastIndexOf('\n');
+              const cleanPreview = lastNewline > 250 ? preview.substring(0, lastNewline) : preview;
+
+              output += `${cleanPreview}\n\n...**内容过长已缓存** (共 ${result.answer.length} 字符)\n`;
+              output += `调用 \`read_more({ resourceId: "${resourceId}" })\` 获取完整内容\n\n`;
+            } else {
+              output += `${result.answer}\n\n`;
+            }
           } else {
             output += `❌ 失败: ${result.error || 'Unknown error'}\n\n`;
           }
