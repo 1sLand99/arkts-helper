@@ -15,7 +15,7 @@ import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import { DocsSearcher } from './search.js';
 import { huaweiQA, huaweiQABatch } from './huawei-qa.js';
-import { huaweiQAAuth, huaweiQAAuthBatch, getCookie, setCookie, validateCookie } from './huawei-qa-auth.js';
+import { huaweiQAAuth, huaweiQAAuthBatch, getConfigFilePath, getCookie, setCookie, validateCookie } from './huawei-qa-auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -444,7 +444,7 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
 Cookie 已验证有效并保存。后续的 ask_ai 调用将使用登录态，无次数限制。
 
 配置文件位置：
-${process.env.APPDATA || process.env.HOME}/arkts-mcp/config.json`;
+${getConfigFilePath()}`;
         } else {
           return `⚠️ Cookie 可能已过期或无效
 

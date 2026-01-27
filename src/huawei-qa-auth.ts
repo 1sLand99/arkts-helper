@@ -9,9 +9,31 @@ import * as path from 'path';
 import * as os from 'os';
 
 const BASE_URL = 'https://svc-drcn.developer.huawei.com';
+const QA_TIMEOUT_MS = parseInt(process.env.ARKTS_QA_TIMEOUT_MS || '120000', 10);
 
 // Cookie 配置文件路径
-const CONFIG_DIR = path.join(os.homedir(), 'AppData', 'Roaming', 'arkts-mcp');
+function resolveConfigDir(): string {
+  const overrideDir = process.env.ARKTS_MCP_CONFIG_DIR;
+  if (overrideDir && overrideDir.trim().length > 0) {
+    return overrideDir;
+  }
+
+  // Windows: use %APPDATA%\arkts-mcp
+  if (process.platform === 'win32') {
+    const appData = process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming');
+    return path.join(appData, 'arkts-mcp');
+  }
+
+  // Linux/macOS: prefer XDG, fallback to ~/.config
+  const xdg = process.env.XDG_CONFIG_HOME;
+  if (xdg && xdg.trim().length > 0) {
+    return path.join(xdg, 'arkts-mcp');
+  }
+
+  return path.join(os.homedir(), '.config', 'arkts-mcp');
+}
+
+const CONFIG_DIR = resolveConfigDir();
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
 interface Config {
@@ -77,6 +99,10 @@ export const setCookie = (cookie: string): void => {
   console.error('[huawei-qa-auth] Cookie saved successfully');
 };
 
+export const getConfigFilePath = (): string => {
+  return CONFIG_FILE;
+};
+
 /**
  * 检查 Cookie 是否有效（简单验证）
  */
@@ -85,6 +111,7 @@ export const validateCookie = async (cookie: string): Promise<boolean> => {
     // 尝试创建会话来验证 Cookie
     const response = await fetch(`${BASE_URL}/intelligentcustomer/v1/dialog/id`, {
       method: 'POST',
+      signal: AbortSignal.timeout(QA_TIMEOUT_MS),
       headers: {
         'Content-Type': 'application/json',
         'Cookie': cookie,
@@ -117,6 +144,7 @@ export const validateCookie = async (cookie: string): Promise<boolean> => {
 const createDialogAuth = async (cookie: string): Promise<string> => {
   const response = await fetch(`${BASE_URL}/intelligentcustomer/v1/dialog/id`, {
     method: 'POST',
+    signal: AbortSignal.timeout(QA_TIMEOUT_MS),
     headers: {
       'Content-Type': 'application/json',
       'Cookie': cookie,
@@ -163,6 +191,7 @@ const askQuestionAuth = async (
 ): Promise<StreamResult> => {
   const response = await fetch(`${BASE_URL}/intelligentcustomer/v1/dialog/submission`, {
     method: 'POST',
+    signal: AbortSignal.timeout(QA_TIMEOUT_MS),
     headers: {
       'Content-Type': 'application/json',
       'Cookie': cookie,

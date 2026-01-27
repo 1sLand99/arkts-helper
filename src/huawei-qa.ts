@@ -1,6 +1,7 @@
 import * as crypto from 'crypto';
 
 const BASE_URL = 'https://svc-drcn.developer.huawei.com';
+const QA_TIMEOUT_MS = parseInt(process.env.ARKTS_QA_TIMEOUT_MS || '120000', 10);
 
 interface StreamResult {
   answer: string;
@@ -19,6 +20,7 @@ const generateAnonymousId = (): string => {
 export const createDialog = async (anonymousId: string): Promise<string> => {
   const response = await fetch(`${BASE_URL}/intelligentcustomer/v1/public/dialog/id`, {
     method: 'POST',
+    signal: AbortSignal.timeout(QA_TIMEOUT_MS),
     headers: {
       'Content-Type': 'application/json',
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -53,6 +55,7 @@ export const askQuestion = async (
 ): Promise<StreamResult> => {
   const response = await fetch(`${BASE_URL}/intelligentcustomer/v1/public/dialog/submission`, {
     method: 'POST',
+    signal: AbortSignal.timeout(QA_TIMEOUT_MS),
     headers: {
       'Content-Type': 'application/json',
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',

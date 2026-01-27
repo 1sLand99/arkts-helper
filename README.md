@@ -75,6 +75,8 @@ npm run dev:http
 |--------|------|--------|
 | `ARKTS_DOCS_DIR` | 文档目录路径 | 项目 `static/docs` 目录 |
 | `ARKTS_MCP_PORT` | HTTP 服务端口 | 3456 |
+| `ARKTS_QA_TIMEOUT_MS` | 华为智能问答请求超时（毫秒） | 120000 |
+| `ARKTS_MCP_CONFIG_DIR` | Cookie 配置目录（用于 set_ai_auth / ask_ai 登录态） | Windows: `%APPDATA%/arkts-mcp`；Linux/WSL: `~/.config/arkts-mcp` |
 
 ## 工具详解
 
