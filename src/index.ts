@@ -28,7 +28,7 @@ function findPackageRoot(startDir: string): string {
     try {
       if (fs.existsSync(pkgJsonPath)) {
         const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
-        if (pkg.name === 'harmonyos-mcp-server') {
+        if (pkg.name === 'arkts-helper-mcp') {
           return currentDir;
         }
       }
@@ -543,7 +543,7 @@ async function main() {
     // stdio mode (default)
     const server = new Server(
       {
-        name: 'harmonyos-mcp-server',
+        name: 'arkts-helper-mcp',
         version: '1.0.0',
       },
       {
