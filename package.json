@@ -1,11 +1,11 @@
 {
-  "name": "arkts-docs-mcp-server",
+  "name": "harmonyos-mcp-server",
   "version": "1.0.0",
   "description": "MCP Server for HarmonyOS ArkTS documentation",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "arkts-mcp": "./dist/index.js"
+    "harmonyos-mcp": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc",

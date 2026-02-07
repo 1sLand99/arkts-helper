@@ -8,6 +8,7 @@ package-lock.json
 config.json
 .env
 .idea/
+PROJECT_SUMMARY.md
 
 # WindsurfChatOpen
 .windsurfchatopen/
